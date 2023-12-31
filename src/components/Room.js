@@ -13,7 +13,7 @@ function Room() {
 
   return (
     <div className="flex items-center justify-center h-screen w-screen">
-      <div className="w-1/4 text-center rounded-lg border-b-2 p-10 border-4">
+      <div className="w-1/4 text-center rounded-lg border-b-2 p-10 border-4 max-h-full">
         <h1 className="text-4xl font-handwriting mb-8 text-b1 text-center">
           Enter the Room
         </h1>
@@ -31,7 +31,7 @@ function Room() {
           value={roomID}
           onChange={(e) => setRoomID(e.target.value)}
         />
-        <Button onClick={handleLogin} customClass="mt-3">
+        <Button onClick={handleLogin} customClass="mt-3 ">
           Enter
         </Button>
       </div>

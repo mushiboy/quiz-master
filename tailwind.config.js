@@ -6,7 +6,8 @@ module.exports = {
       fontFamily: {
         sans: ["Josefin Slab", "sans-serif"],
         handwriting: ["Cabin Sketch", "cursive"],
-        quiz: ["Comforter Brush", "cursive"],
+        // quiz: ["Comforter Brush", "cursive"],
+        quiz: ["Love Ya Like A Sister", "cursive"],
       },
       colors: {
         b1: "#222831",

@@ -4,31 +4,27 @@ import TextField from "./TextField";
 
 function AddQuiz() {
   const [question, setQuestion] = useState("");
-  const [options, setOptions] = useState(["", "", "", ""]); // Initial options state with 4 empty options
+  const [options, setOptions] = useState(["", "", "", ""]);
 
   const handleAddOption = () => {
-    // Add an empty option when the user clicks the "Add Option" button
     if (options.length < 4) {
       setOptions([...options, ""]);
     }
   };
 
   const handleOptionChange = (index, value) => {
-    // Update the options state when the user changes an option
     const newOptions = [...options];
     newOptions[index] = value;
     setOptions(newOptions);
   };
 
   const handleDeleteOption = (index) => {
-    // Delete the selected option
     const newOptions = [...options];
     newOptions.splice(index, 1);
     setOptions(newOptions);
   };
 
   const handleAddQuiz = () => {
-    // Handle adding quiz logic here
     console.log("Adding quiz with:", question, options);
   };
 
