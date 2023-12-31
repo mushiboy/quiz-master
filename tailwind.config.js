@@ -15,6 +15,9 @@ module.exports = {
         orange: "#D65A31",
         w: "#EEEEEE",
       },
+      borderWidth: {
+        30: "30px",
+      },
     },
   },
   plugins: [],

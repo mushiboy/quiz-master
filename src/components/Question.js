@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Button from "./Button";
 import TextField from "./TextField";
 
-function AddQuiz() {
+function Question() {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", "", "", ""]);
 
@@ -77,4 +77,4 @@ function AddQuiz() {
   );
 }
 
-export default AddQuiz;
+export default Question;
