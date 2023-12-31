@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./NavBar";
 import QuizList from "./QuizList"; // Import the QuizList component
+import Button from "./Button";
 
 const QuizMasterLandingPage = () => {
   const [quizzes, setQuizzes] = useState([]);
@@ -23,11 +24,18 @@ const QuizMasterLandingPage = () => {
     fetchQuizzes();
   }, []);
 
+  const handleAddNewQuiz = () => {
+    console.log("Adding a new quiz...");
+  };
+
   return (
     <div>
       <Navbar currentPage="quiz-master-landing" />
       <div className="container mx-auto mt-8">
         <h1 className="font-handwriting text-5xl">Welcome!</h1>
+        <Button onClick={handleAddNewQuiz} customClass="mt-5">
+          Add New Quiz
+        </Button>
 
         <QuizList quizzes={quizzes} />
       </div>

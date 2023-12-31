@@ -1,8 +1,9 @@
+// Question.js
 import React, { useState } from "react";
 import Button from "./Button";
 import TextField from "./TextField";
 
-function Question() {
+function Question({ id, questionNumber, onDelete }) {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", "", "", ""]);
 
@@ -24,23 +25,23 @@ function Question() {
     setOptions(newOptions);
   };
 
-  const handleAddQuiz = () => {
-    console.log("Adding quiz with:", question, options);
+  const handleDeleteQuestion = () => {
+    onDelete(id);
   };
 
   return (
-    <div className="flex items-center justify-center h-screen w-screen bg-gray-100">
-      <div className="w-96 p-8 rounded-lg shadow-md bg-white">
-        <h1 className="text-2xl font-bold mb-6 text-gray-800">Add Quiz</h1>
-        <TextField
-          label="Question"
-          type="text"
-          placeholder="Enter your question"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-        />
+    <div className="flex flex-col mt-3 bg-gray-100 p-5 rounded-lg w-2/3 justify-center items-center">
+      <TextField
+        label={`Question ${questionNumber}`}
+        type="text"
+        placeholder={`Enter your question ${questionNumber}`}
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+      />
+
+      <div className="flex space-x-3">
         {options.map((option, index) => (
-          <div key={index} className="flex items-center space-x-2 mt-3">
+          <div key={index} className="flex flex-col items-center">
             <TextField
               label={`Option ${index + 1}`}
               type="text"
@@ -51,28 +52,29 @@ function Question() {
             {options.length > 2 && (
               <Button
                 onClick={() => handleDeleteOption(index)}
-                customClass="text-red-500"
+                customClass="text-red-500 mt-2"
               >
                 Delete
               </Button>
             )}
           </div>
         ))}
-        {options.length < 4 && (
-          <Button
-            onClick={handleAddOption}
-            customClass="mt-3 bg-blue-500 text-white"
-          >
-            Add Option
-          </Button>
-        )}
-        <Button
-          onClick={handleAddQuiz}
-          customClass="mt-4 bg-green-500 text-white"
-        >
-          Add Quiz
-        </Button>
       </div>
+
+      {options.length < 4 && (
+        <Button
+          onClick={handleAddOption}
+          customClass="mt-5 bg-blue-500 text-white"
+        >
+          Add Option
+        </Button>
+      )}
+      <Button
+        onClick={handleDeleteQuestion}
+        customClass="ml-2 bg-red-500 text-white translate mt-3"
+      >
+        Delete Question
+      </Button>
     </div>
   );
 }

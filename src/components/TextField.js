@@ -3,8 +3,8 @@ import React from "react";
 
 const TextField = ({ label, type, placeholder, value, onChange }) => {
   return (
-    <div className="mb-4">
-      <label className="block text-b2 text-sm font-bold mb-2 text-left">
+    <div className="m-4 w-full ">
+      <label className="block text-b2 text-lg font-bold mb-2 text-left">
         {label}
       </label>
       <input
