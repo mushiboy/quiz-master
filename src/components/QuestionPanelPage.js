@@ -1,6 +1,7 @@
-//Should accept the Question to be displayed as an input object and then add them to the question block and answer blocks
+import React from "react";
 import CurrentQuestion from "./CurrentQuestion";
 import Navbar from "./NavBar";
+
 const QuestionPanelPage = () => {
   const sampleQuestion = {
     id: "1",
@@ -15,11 +16,19 @@ const QuestionPanelPage = () => {
     correctAnswer: "B",
   };
 
+  const handleSelectOption = (selectedOption) => {
+    // Handle the selected option logic here
+    console.log("Selected Option:", selectedOption);
+  };
+
   return (
     <div>
       <Navbar currentPage="game-page" />
-      <div className="container mx-auto mt-8">
-        <CurrentQuestion question={sampleQuestion}></CurrentQuestion>
+      <div className="container mx-auto mt-20 flex items-center justify-center">
+        <CurrentQuestion
+          question={sampleQuestion}
+          onSelectOption={handleSelectOption}
+        />
       </div>
     </div>
   );

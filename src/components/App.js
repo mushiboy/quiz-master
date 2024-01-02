@@ -10,8 +10,8 @@ import QuestionPanelPage from "./QuestionPanelPage";
 function App() {
   return (
     <div className="">
-      {/* <LandingPage></LandingPage>;<Navbar></Navbar> */}
-      <QuizMasterLandingPage></QuizMasterLandingPage>
+      <LandingPage></LandingPage>
+      {/* <QuizMasterLandingPage></QuizMasterLandingPage> */}
       {/* <AddQuiz></AddQuiz> */}
       {/* <QuestionPanelPage></QuestionPanelPage> */}
     </div>

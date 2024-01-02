@@ -2,6 +2,16 @@ import React from "react";
 import Logo from "./Logo";
 
 const Navbar = ({ currentPage }) => {
+  if (currentPage === "game-page") {
+    return (
+      <nav className="bg-b1 p-2">
+        <div className="container mx-auto flex items-center justify-center">
+          <Logo className="text-orange hover:text-w" />
+        </div>
+      </nav>
+    );
+  }
+
   return (
     <nav className="bg-b1 p-2">
       <div className="container mx-auto flex items-center justify-between">

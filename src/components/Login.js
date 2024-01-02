@@ -14,7 +14,7 @@ const Login = ({ onSignupClick }) => {
   return (
     <div className="flex items-center justify-center h-screen w-screen">
       <div className="flex flex-col items-center justify-center rounded-lg border-b2 p-10 border-4 h-1/2 w-full">
-        <h1 className="text-4xl font-handwriting mb-8 text-b1 text-center">
+        <h1 className="text-4xl font-handwriting mt-8 text-b1 text-center">
           Login to Create Quiz
         </h1>
         <TextField
