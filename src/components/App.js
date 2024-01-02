@@ -5,6 +5,7 @@ import LandingPage from "./LandingPage";
 import Navbar from "./NavBar";
 import QuizMasterLandingPage from "./QuizMasterLandingPage";
 import AddQuiz from "./AddQuiz";
+import QuestionPanelPage from "./QuestionPanelPage";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       {/* <LandingPage></LandingPage>;<Navbar></Navbar> */}
       <QuizMasterLandingPage></QuizMasterLandingPage>
       {/* <AddQuiz></AddQuiz> */}
+      {/* <QuestionPanelPage></QuestionPanelPage> */}
     </div>
   );
 }
