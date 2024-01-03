@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CurrentQuestion from "./CurrentQuestion";
 import Navbar from "./NavBar";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 const QuestionPanelPage = () => {
+  const [question, setQuestion] = useState("");
+  useEffect(() => {
+    const socket = new SockJS("http://localhost:8080/game-socket");
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, () => {
+      stompClient.subscribe("/events/question", (response) => {
+        console.log(response);
+        setQuestion(JSON.parse(response.body).content);
+      });
+    });
+
+    return () => {
+      stompClient.disconnect();
+    };
+  }, []);
+
   const sampleQuestion = {
     id: "1",
     question: "What is the capital of Canada?",
@@ -26,7 +45,7 @@ const QuestionPanelPage = () => {
       <Navbar currentPage="game-page" />
       <div className="container mx-auto mt-20 flex items-center justify-center">
         <CurrentQuestion
-          question={sampleQuestion}
+          question={question}
           onSelectOption={handleSelectOption}
         />
       </div>
