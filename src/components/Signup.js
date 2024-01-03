@@ -3,9 +3,9 @@ import Button from "./Button";
 import TextField from "./TextField";
 
 const Signup = ({ onLoginClick }) => {
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(""); // Changed from userName to email
 
   const handleSignup = async () => {
     try {
@@ -15,18 +15,22 @@ const Signup = ({ onLoginClick }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username,
+          name,
           password,
-          email,
+          userName: email, // Use email as userName (assuming email is the username in your backend)
         }),
+        credentials: "include",
       });
 
       if (response.ok) {
-        const responseBody = await response.json();
-        console.log("Signup successful:", responseBody);
-        // Optionally, you can handle the successful signup, e.g., redirect or show a success message.
+        const responseBody = await response.text();
+        console.log("Response Body:", responseBody);
+
+        // Display a success message or handle the response as needed
+        alert("Signup successful! " + responseBody);
       } else {
-        console.error("Signup failed:", response.statusText);
+        // Handle non-200 status codes
+        console.error("Signup failed with status:", response.status);
         alert("Signup failed. Please check your details and try again.");
       }
     } catch (error) {
@@ -44,11 +48,11 @@ const Signup = ({ onLoginClick }) => {
           Signup
         </h1>
         <TextField
-          label="Username"
+          label="Name"
           type="text"
-          placeholder="Enter your username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Enter your name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
         <TextField
           label="Password"

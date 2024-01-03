@@ -1,11 +1,12 @@
-// QuizMasterLandingPage.js
 import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "./NavBar";
-import QuizList from "./QuizList"; // Import the QuizList component
+import QuizList from "./QuizList";
 import Button from "./Button";
 
 const QuizMasterLandingPage = () => {
   const [quizzes, setQuizzes] = useState([]);
+  const { username } = useParams();
 
   // Example: Fetch user's quizzes
   useEffect(() => {
@@ -32,7 +33,7 @@ const QuizMasterLandingPage = () => {
     <div>
       <Navbar currentPage="quiz-master-landing" />
       <div className="container mx-auto mt-8">
-        <h1 className="font-handwriting text-5xl">Welcome!</h1>
+        <h1 className="font-handwriting text-5xl">{`Welcome, ${username}!`}</h1>
         <Button onClick={handleAddNewQuiz} customClass="mt-5">
           Add New Quiz
         </Button>

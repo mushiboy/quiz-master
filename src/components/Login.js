@@ -1,14 +1,60 @@
 import React, { useState } from "react";
 import Button from "./Button";
 import TextField from "./TextField";
+import { useNavigate } from "react-router-dom";
 
 const Login = ({ onSignupClick }) => {
-  const [username, setUsername] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // Handle login logic here
-    console.log("Logging in with:", username, password);
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/app/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userName,
+          password,
+        }),
+        credentials: "include",
+      });
+
+      // Check if the status code is 200 (OK)
+      if (response.status === 200) {
+        const responseBody = await response.text();
+
+        try {
+          const parsedResponse = JSON.parse(responseBody);
+          console.log("Parsed Response:", parsedResponse);
+
+          if (parsedResponse.statusInfo === "OK") {
+            // Successful login
+            console.log("Login successful!");
+            navigate(`/quizmaster/${userName}`);
+          } else {
+            console.error("Login failed:", parsedResponse.message);
+            alert("Login failed. Please check your credentials and try again.");
+          }
+        } catch (error) {
+          console.error("Error parsing response:", error.message);
+          alert(
+            "An unexpected error occurred during login. Please try again later."
+          );
+        }
+      } else {
+        // Handle non-200 status codes
+        console.error("Login failed with status:", response.status);
+        alert("Login failed. Please check your credentials and try again.");
+      }
+    } catch (error) {
+      console.error("Error during login:", error.message);
+      alert(
+        "An unexpected error occurred during login. Please try again later."
+      );
+    }
   };
 
   return (
@@ -21,8 +67,8 @@ const Login = ({ onSignupClick }) => {
           label="Username"
           type="text"
           placeholder="Enter your username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
         />
         <TextField
           label="Password"
