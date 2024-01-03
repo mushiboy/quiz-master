@@ -9,7 +9,7 @@ const Signup = ({ onLoginClick }) => {
 
   const handleSignup = async () => {
     try {
-      const response = await fetch("http://your-backend-url/app/signup", {
+      const response = await fetch("http://localhost:8080/app/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,11 +27,13 @@ const Signup = ({ onLoginClick }) => {
         // Optionally, you can handle the successful signup, e.g., redirect or show a success message.
       } else {
         console.error("Signup failed:", response.statusText);
-        // Optionally, you can handle the failed signup, e.g., show an error message.
+        alert("Signup failed. Please check your details and try again.");
       }
     } catch (error) {
       console.error("Error during signup:", error.message);
-      // Handle any unexpected errors during the signup process.
+      alert(
+        "An unexpected error occurred during signup. Please try again later."
+      );
     }
   };
 
