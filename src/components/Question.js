@@ -6,6 +6,7 @@ import TextField from "./TextField";
 function Question({ id, questionNumber, onDelete }) {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", "", "", ""]);
+  const [correctOption, setCorrectOption] = useState(""); // Track the correct option
 
   const handleAddOption = () => {
     if (options.length < 4) {
@@ -27,6 +28,10 @@ function Question({ id, questionNumber, onDelete }) {
 
   const handleDeleteQuestion = () => {
     onDelete(id);
+  };
+
+  const handleCorrectOptionChange = (event) => {
+    setCorrectOption(event.target.value);
   };
 
   return (
@@ -57,6 +62,16 @@ function Question({ id, questionNumber, onDelete }) {
                 Delete
               </Button>
             )}
+            {/* Add radio button for each option */}
+            <input
+              type="radio"
+              name={`correctOption${id}`}
+              value={index}
+              checked={correctOption === `${index}`}
+              onChange={handleCorrectOptionChange}
+              className="mt-2"
+            />
+            <label className="ml-1">Correct Option</label>
           </div>
         ))}
       </div>

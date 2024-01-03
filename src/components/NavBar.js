@@ -35,10 +35,7 @@ const Navbar = ({ currentPage }) => {
             My Profile
           </a>
 
-          <a
-            href="/sign-out"
-            className="text-white  hover:bg-orange p-3 rounded-lg"
-          >
+          <a href="/" className="text-white  hover:bg-orange p-3 rounded-lg">
             Sign Out
           </a>
         </div>

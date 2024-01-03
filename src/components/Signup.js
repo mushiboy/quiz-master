@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import Button from "./Button";
 import TextField from "./TextField";
+import { useNavigate } from "react-router-dom";
 
 const Signup = ({ onLoginClick }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState(""); // Changed from userName to email
+  const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
@@ -27,7 +29,8 @@ const Signup = ({ onLoginClick }) => {
         console.log("Response Body:", responseBody);
 
         // Display a success message or handle the response as needed
-        alert("Signup successful! " + responseBody);
+        alert("Signup successful! ");
+        navigate(`/quizmaster/${name}`);
       } else {
         // Handle non-200 status codes
         console.error("Signup failed with status:", response.status);
