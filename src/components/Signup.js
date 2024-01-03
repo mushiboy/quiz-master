@@ -7,9 +7,32 @@ const Signup = ({ onLoginClick }) => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
-  const handleSignup = () => {
-    // Handle signup logic here
-    console.log("Signing up with:", username, password, email);
+  const handleSignup = async () => {
+    try {
+      const response = await fetch("http://your-backend-url/app/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          email,
+        }),
+      });
+
+      if (response.ok) {
+        const responseBody = await response.json();
+        console.log("Signup successful:", responseBody);
+        // Optionally, you can handle the successful signup, e.g., redirect or show a success message.
+      } else {
+        console.error("Signup failed:", response.statusText);
+        // Optionally, you can handle the failed signup, e.g., show an error message.
+      }
+    } catch (error) {
+      console.error("Error during signup:", error.message);
+      // Handle any unexpected errors during the signup process.
+    }
   };
 
   return (
