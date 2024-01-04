@@ -4,7 +4,7 @@ import Navbar from "./NavBar";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
-const QuestionPanelPage = () => {
+const QuestionPanelPage = (playerId, roomId) => {
   const [question, setQuestion] = useState("");
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/game-socket");
@@ -22,19 +22,6 @@ const QuestionPanelPage = () => {
     };
   }, []);
 
-  const sampleQuestion = {
-    id: "1",
-    question: "What is the capital of Canada?",
-    quizId: "quiz123",
-    options: {
-      A: "Toronto",
-      B: "Ottawa",
-      C: "Vancouver",
-      D: "Montreal",
-    },
-    correctAnswer: "B",
-  };
-
   const handleSelectOption = (selectedOption) => {
     // Handle the selected option logic here
     console.log("Selected Option:", selectedOption);
@@ -44,10 +31,16 @@ const QuestionPanelPage = () => {
     <div>
       <Navbar currentPage="game-page" />
       <div className="container mx-auto mt-20 flex items-center justify-center">
-        <CurrentQuestion
-          question={question}
-          onSelectOption={handleSelectOption}
-        />
+        {question ? (
+          <CurrentQuestion
+            question={question}
+            onSelectOption={handleSelectOption}
+          />
+        ) : (
+          <div>
+            <p>Waiting for incoming questions...</p>
+          </div>
+        )}
       </div>
     </div>
   );
