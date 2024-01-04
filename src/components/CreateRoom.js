@@ -4,6 +4,7 @@ import Navbar from "./NavBar";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import ReactToPdf from "react-to-pdf";
+import Button from "./Button";
 
 const CreateRoom = () => {
   const [players, setPlayers] = useState([]);
@@ -78,14 +79,24 @@ const CreateRoom = () => {
     setPlayers(updatedScores);
   };
 
+  const onStartQuiz = () => {
+    // Send API call to start the quiz
+    fetch("http://localhost:8080/app/startgame?quizId=" + quizID, {
+      method: "POST",
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        alert(data);
+      })
+      .catch((error) => {
+        console.error("Error starting the quiz:", error);
+      });
+  };
+
   const columns = [
     { key: "playerName", label: "Player Name" },
     { key: "score", label: "Score" },
   ];
-
-  const options = {
-    orientation: "landscape",
-  };
 
   const handlePrintClick = async () => {
     const { toPdf } = await import("react-to-pdf");
@@ -133,6 +144,10 @@ const CreateRoom = () => {
             ))}
           </tbody>
         </table>
+
+        <Button onClick={onStartQuiz} customClass="mt-2 bg-orange hover:bg-b2">
+          Start Quiz
+        </Button>
 
         {/* <button
           onClick={handlePrintClick}
