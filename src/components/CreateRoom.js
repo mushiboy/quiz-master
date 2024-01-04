@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import Navbar from "./NavBar";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
@@ -7,6 +8,7 @@ import ReactToPdf from "react-to-pdf";
 const CreateRoom = () => {
   const [players, setPlayers] = useState([]);
   const [numPlayers, setNumPlayers] = useState(players.length);
+  const { quizID } = useParams();
 
   const ref = useRef();
 
@@ -15,35 +17,65 @@ const CreateRoom = () => {
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
-      // /evets/scores
       stompClient.subscribe("/events/joinedPlayers", (response) => {
-        console.log(response);
-        if (response.body){
-          updatePlayerList(JSON.parse(response.body).content);
+        if (response.body) {
+          updatePlayerList(response.body);
         }
-        
+      });
+
+      stompClient.subscribe("/events/scores", (response) => {
+        if (response.body) {
+          updateScores(response.body);
+        }
       });
     });
-
   }, []);
 
   const updatePlayerList = (newPlayer) => {
-    setPlayers((prevPlayers) => {
-      const existingPlayerIndex = prevPlayers.findIndex(
-        (player) => player.playerName === newPlayer.playerName
-      );
+    const parsedNewPlayer = JSON.parse(newPlayer);
+    console.log(parsedNewPlayer);
+    console.log(parsedNewPlayer.roomId);
 
-      if (existingPlayerIndex !== -1) {
-        // Player already exists, update their info
-        prevPlayers[existingPlayerIndex] = newPlayer;
-      } else {
-        // Player is new, add them to the list
-        prevPlayers.push(newPlayer);
-      }
+    // Check if the quizID from useParams matches the quizID from the incoming socket message
+    if (parsedNewPlayer.roomId === quizID) {
+      console.log("Quiz ID:", parsedNewPlayer.quizID);
+      setPlayers((prevPlayers) => {
+        const existingPlayerIndex = prevPlayers.findIndex(
+          (player) => player.playerName === parsedNewPlayer.playerName
+        );
 
-      setNumPlayers(prevPlayers.length);
-      return [...prevPlayers];
-    });
+        if (existingPlayerIndex !== -1) {
+          // Player already exists, update their info if quizID is the same
+          if (
+            prevPlayers[existingPlayerIndex].quizID === parsedNewPlayer.roomId
+          ) {
+            prevPlayers[existingPlayerIndex] = {
+              playerName: parsedNewPlayer.playerName,
+              score: parsedNewPlayer.score,
+              quizID: parsedNewPlayer.quizID,
+            };
+          }
+        } else {
+          // Player is new, add them to the list
+          prevPlayers.push({
+            playerName: parsedNewPlayer.playerName,
+            score: parsedNewPlayer.score,
+            quizID: parsedNewPlayer.quizID,
+          });
+        }
+
+        setNumPlayers(prevPlayers.length);
+        return [...prevPlayers];
+      });
+    }
+  };
+
+  const updateScores = (responseBody) => {
+    const updatedScores = JSON.parse(responseBody);
+
+    updatedScores.sort((a, b) => b.score - a.score);
+
+    setPlayers(updatedScores);
   };
 
   const columns = [
@@ -59,14 +91,9 @@ const CreateRoom = () => {
     const { toPdf } = await import("react-to-pdf");
     const pdfGenerator = toPdf();
 
-    // This function will return a promise
-    pdfGenerator.onBeforeGetContent(() => {
-      // Customize the PDF content if needed
-    });
+    pdfGenerator.onBeforeGetContent(() => {});
 
     pdfGenerator.toPdf();
-
-    // Handle the promise if needed
   };
 
   return (
