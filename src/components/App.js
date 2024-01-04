@@ -15,7 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route
-            path="/quizmaster/:username"
+            path="/:username/quizmaster"
             element={<QuizMasterLandingPage />}
           />
           <Route path="/:username/addquiz" element={<AddQuiz />} />

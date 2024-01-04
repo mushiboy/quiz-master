@@ -3,35 +3,47 @@ import React, { useState } from "react";
 import Button from "./Button";
 import TextField from "./TextField";
 
-function Question({ id, questionNumber, onDelete }) {
+function Question({ id, questionNumber, onDelete, onChange }) {
   const [question, setQuestion] = useState("");
-  const [options, setOptions] = useState(["", "", "", ""]);
-  const [correctOption, setCorrectOption] = useState(""); // Track the correct option
+  const [options, setOptions] = useState({
+    OptionA: "",
+    OptionB: "",
+    OptionC: "",
+    OptionD: "",
+  });
+  const [correctOption, setCorrectOption] = useState(""); // Initialize correctOption
 
-  const handleAddOption = () => {
-    if (options.length < 4) {
-      setOptions([...options, ""]);
-    }
+  const handleOptionChange = (key, value) => {
+    setOptions({
+      ...options,
+      [key]: value,
+    });
+
+    // Update the parent component with the changed question
+    onChange({
+      id,
+      question,
+      options: { ...options, [key]: value },
+      correctAnswer: correctOption || key, // Use correctOption or the current key
+    });
   };
 
-  const handleOptionChange = (index, value) => {
-    const newOptions = [...options];
-    newOptions[index] = value;
-    setOptions(newOptions);
-  };
+  const handleCorrectOptionChange = (key) => {
+    setCorrectOption(key);
 
-  const handleDeleteOption = (index) => {
-    const newOptions = [...options];
-    newOptions.splice(index, 1);
-    setOptions(newOptions);
+    // Update the parent component with the changed correctAnswer
+    onChange({
+      id,
+      question,
+      options,
+      correctAnswer: key,
+    });
   };
 
   const handleDeleteQuestion = () => {
+    // Set correctOption to an empty string when deleting the question
+    setCorrectOption("");
     onDelete(id);
-  };
-
-  const handleCorrectOptionChange = (event) => {
-    setCorrectOption(event.target.value);
   };
 
   return (
@@ -45,30 +57,22 @@ function Question({ id, questionNumber, onDelete }) {
       />
 
       <div className="flex space-x-3">
-        {options.map((option, index) => (
-          <div key={index} className="flex flex-col items-center">
+        {Object.entries(options).map(([key, value]) => (
+          <div key={key} className="flex flex-col items-center">
             <TextField
-              label={`Option ${index + 1}`}
+              label={`${key}`}
               type="text"
-              placeholder={`Enter option ${index + 1}`}
-              value={option}
-              onChange={(e) => handleOptionChange(index, e.target.value)}
+              placeholder={`Enter option ${key}`}
+              value={value}
+              onChange={(e) => handleOptionChange(key, e.target.value)}
             />
-            {options.length > 2 && (
-              <Button
-                onClick={() => handleDeleteOption(index)}
-                customClass="text-red-500 mt-2"
-              >
-                Delete
-              </Button>
-            )}
             {/* Add radio button for each option */}
             <input
               type="radio"
               name={`correctOption${id}`}
-              value={index}
-              checked={correctOption === `${index}`}
-              onChange={handleCorrectOptionChange}
+              value={key}
+              checked={correctOption === key}
+              onChange={() => handleCorrectOptionChange(key)}
               className="mt-2"
             />
             <label className="ml-1">Correct Option</label>
@@ -76,14 +80,6 @@ function Question({ id, questionNumber, onDelete }) {
         ))}
       </div>
 
-      {options.length < 4 && (
-        <Button
-          onClick={handleAddOption}
-          customClass="mt-5 bg-blue-500 text-white"
-        >
-          Add Option
-        </Button>
-      )}
       <Button
         onClick={handleDeleteQuestion}
         customClass="ml-2 bg-red-500 text-white translate mt-3"
