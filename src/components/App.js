@@ -20,6 +20,10 @@ function App() {
             element={<QuizMasterLandingPage />}
           />
           <Route path="/:username/addquiz" element={<AddQuiz />} />
+          <Route
+            path="/gameRoom/:playerId/:roomId"
+            element={<QuestionPanelPage />}
+          />
 
           <Route path="/:username/startquiz/:quizID" element={<CreateRoom />} />
         </Routes>
