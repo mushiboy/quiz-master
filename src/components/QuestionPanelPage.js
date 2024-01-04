@@ -4,36 +4,40 @@ import Navbar from "./NavBar";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
-const QuestionPanelPage = () => {
+const QuestionPanelPage = (playerId, roomId) => {
   const [question, setQuestion] = useState("");
+
+  const sampleQues = {
+    id: "1",
+    question: "What is the capital of France?",
+    quizId: "mugesh_562",
+    options: {
+      OptionA: "Paris",
+      OptionB: "Berlin",
+      OptionC: "London",
+      OptionD: "Madrid",
+    },
+    correctAnswer: "OptionA",
+  };
+
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/game-socket");
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
       stompClient.subscribe("/events/question", (response) => {
-        console.log(response);
-        setQuestion(JSON.parse(response.body).content);
+        console.log("Got a question that looks like this! ");
+        const newQuestion = JSON.parse(response.body);
+        console.log("Sending Format ");
+        console.log(newQuestion);
+        setQuestion(newQuestion);
       });
     });
 
-    return () => {
-      stompClient.disconnect();
-    };
+    // return () => {
+    //   stompClient.disconnect();
+    // };
   }, []);
-
-  const sampleQuestion = {
-    id: "1",
-    question: "What is the capital of Canada?",
-    quizId: "quiz123",
-    options: {
-      A: "Toronto",
-      B: "Ottawa",
-      C: "Vancouver",
-      D: "Montreal",
-    },
-    correctAnswer: "B",
-  };
 
   const handleSelectOption = (selectedOption) => {
     // Handle the selected option logic here
@@ -44,16 +48,10 @@ const QuestionPanelPage = () => {
     <div>
       <Navbar currentPage="game-page" />
       <div className="container mx-auto mt-20 flex items-center justify-center">
-        {question ? (
-          <CurrentQuestion
-            question={question}
-            onSelectOption={handleSelectOption}
-          />
-        ) : (
-          <div>
-            <p>Waiting for incoming questions...</p>
-          </div>
-        )}
+        <CurrentQuestion
+          question={question}
+          onSelectOption={handleSelectOption}
+        />
       </div>
     </div>
   );
