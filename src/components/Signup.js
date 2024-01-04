@@ -19,7 +19,7 @@ const Signup = ({ onLoginClick }) => {
         body: JSON.stringify({
           name,
           password,
-          userName: email, // Use email as userName (assuming email is the username in your backend)
+          userName: email,
         }),
         credentials: "include",
       });
@@ -30,7 +30,7 @@ const Signup = ({ onLoginClick }) => {
 
         // Display a success message or handle the response as needed
         alert("Signup successful! ");
-        navigate(`/quizmaster/${name}`);
+        navigate(`/${name}/quizmaster`);
       } else {
         // Handle non-200 status codes
         console.error("Signup failed with status:", response.status);

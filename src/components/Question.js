@@ -24,7 +24,7 @@ function Question({ id, questionNumber, onDelete, onChange }) {
       id,
       question,
       options: { ...options, [key]: value },
-      correctAnswer: correctOption || key, // Use correctOption or the current key
+      correctAnswer: correctOption || key,
     });
   };
 

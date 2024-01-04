@@ -4,11 +4,14 @@ import Navbar from "./NavBar";
 import Button from "./Button";
 import { useParams, useNavigate } from "react-router-dom";
 
+import { v4 as uuidv4 } from "uuid";
+
 const AddQuiz = () => {
   const [quizTitle, setQuizTitle] = useState("");
   const [questions, setQuestions] = useState([{ id: 1 }]);
   const { username } = useParams();
   const navigate = useNavigate();
+  const [quizID, setQuizID] = useState(uuidv4());
 
   const handleAddQuestion = () => {
     if (questions.length < 10) {
@@ -69,13 +72,16 @@ const AddQuiz = () => {
       });
 
       const quizData = {
+        userName: username,
+        quizID,
         quizTitle,
         questions: questions.map(
           ({ id, question, options, correctAnswer }) => ({
-            questionNumber: id,
+            id: id,
             question,
             options,
             correctAnswer,
+            quizId: quizID,
           })
         ),
       };

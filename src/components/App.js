@@ -19,6 +19,7 @@ function App() {
             element={<QuizMasterLandingPage />}
           />
           <Route path="/:username/addquiz" element={<AddQuiz />} />
+
           {/* Add routes for other components */}
           {/* <Route path="/addquiz" element={<AddQuiz />} />
               <Route path="/questionpanel" element={<QuestionPanelPage />} />

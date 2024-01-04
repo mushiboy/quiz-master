@@ -33,7 +33,7 @@ const Login = ({ onSignupClick }) => {
           if (parsedResponse.statusInfo === "OK") {
             // Successful login
             console.log("Login successful!");
-            navigate(`/quizmaster/${userName}`);
+            navigate(`/${userName}/quizmaster`);
           } else {
             console.error("Login failed:", parsedResponse.message);
             alert("Login failed. Please check your credentials and try again.");

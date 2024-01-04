@@ -1,3 +1,4 @@
+// QuizMasterLandingPage.js
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "./NavBar";
@@ -9,22 +10,30 @@ const QuizMasterLandingPage = () => {
   const { username } = useParams();
   const navigate = useNavigate();
 
-  // Example: Fetch user's quizzes
   useEffect(() => {
-    // Replace this with your actual data fetching logic
     const fetchQuizzes = async () => {
-      // Example dummy data
-      const dummyQuizzes = [
-        { id: 1, roomId: "ABC123", title: "Quiz 1" },
-        { id: 2, roomId: "DEF456", title: "Quiz 2" },
-        // Add more quizzes as needed
-      ];
+      try {
+        const response = await fetch(
+          `http://localhost:8080/app/fetchQuizzes/${username}`
+        );
+        if (!response.ok) {
+          throw new Error(`Failed to fetch quizzes: ${response.statusText}`);
+        }
 
-      setQuizzes(dummyQuizzes);
+        const data = await response.json();
+        console.log("Quizzes JSON:", data);
+        setQuizzes(data);
+      } catch (error) {
+        console.error("Error fetching quizzes:", error);
+      }
     };
 
     fetchQuizzes();
-  }, []);
+  }, [username]);
+
+  const handleStartQuiz = (quizId) => {
+    navigate(`/${username}/startquiz/${quizId}`);
+  };
 
   const handleAddNewQuiz = () => {
     navigate(`/${username}/addquiz`);
@@ -39,7 +48,7 @@ const QuizMasterLandingPage = () => {
           Add New Quiz
         </Button>
 
-        <QuizList quizzes={quizzes} />
+        <QuizList quizzes={quizzes} onStartQuiz={handleStartQuiz} />
       </div>
     </div>
   );
