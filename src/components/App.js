@@ -7,6 +7,7 @@ import Navbar from "./NavBar";
 import QuizMasterLandingPage from "./QuizMasterLandingPage";
 import AddQuiz from "./AddQuiz";
 import QuestionPanelPage from "./QuestionPanelPage";
+import CreateRoom from "./CreateRoom";
 
 function App() {
   return (
@@ -24,10 +25,7 @@ function App() {
             element={<QuestionPanelPage />}
           />
 
-          {/* Add routes for other components */}
-          {/* <Route path="/addquiz" element={<AddQuiz />} />
-              <Route path="/questionpanel" element={<QuestionPanelPage />} />
-          */}
+          <Route path="/:username/startquiz/:quizID" element={<CreateRoom />} />
         </Routes>
       </div>
     </Router>

@@ -13,6 +13,7 @@
     "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
     "react-stomp-hooks": "^2.2.1",
+    "react-to-pdf": "^1.0.1",
     "run": "^1.5.0",
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",
