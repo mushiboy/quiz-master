@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Navbar from "./NavBar";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
-// import ReactToPdf from "react-to-pdf";
+import ReactToPdf from "react-to-pdf";
 
 const CreateRoom = () => {
   const [players, setPlayers] = useState([]);
@@ -15,15 +15,16 @@ const CreateRoom = () => {
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
+      // /evets/scores
       stompClient.subscribe("/events/joinedPlayers", (response) => {
         console.log(response);
-        updatePlayerList(JSON.parse(response.body).content);
+        if (response.body){
+          updatePlayerList(JSON.parse(response.body).content);
+        }
+        
       });
     });
 
-    return () => {
-      stompClient.disconnect();
-    };
   }, []);
 
   const updatePlayerList = (newPlayer) => {
