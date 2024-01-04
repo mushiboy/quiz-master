@@ -18,7 +18,7 @@ function App() {
             path="/quizmaster/:username"
             element={<QuizMasterLandingPage />}
           />
-          <Route path="/addquiz" element={<AddQuiz />} />
+          <Route path="/:username/addquiz" element={<AddQuiz />} />
           {/* Add routes for other components */}
           {/* <Route path="/addquiz" element={<AddQuiz />} />
               <Route path="/questionpanel" element={<QuestionPanelPage />} />

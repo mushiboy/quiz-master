@@ -7,6 +7,7 @@ import Button from "./Button";
 const QuizMasterLandingPage = () => {
   const [quizzes, setQuizzes] = useState([]);
   const { username } = useParams();
+  const navigate = useNavigate();
 
   // Example: Fetch user's quizzes
   useEffect(() => {
@@ -26,7 +27,7 @@ const QuizMasterLandingPage = () => {
   }, []);
 
   const handleAddNewQuiz = () => {
-    console.log("Adding a new quiz...");
+    navigate(`/${username}/addquiz`);
   };
 
   return (
