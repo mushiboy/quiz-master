@@ -44,10 +44,16 @@ const QuestionPanelPage = () => {
     <div>
       <Navbar currentPage="game-page" />
       <div className="container mx-auto mt-20 flex items-center justify-center">
-        <CurrentQuestion
-          question={question}
-          onSelectOption={handleSelectOption}
-        />
+        {question ? (
+          <CurrentQuestion
+            question={question}
+            onSelectOption={handleSelectOption}
+          />
+        ) : (
+          <div>
+            <p>Waiting for incoming questions...</p>
+          </div>
+        )}
       </div>
     </div>
   );
