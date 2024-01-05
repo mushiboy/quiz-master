@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const CurrentQuestion = ({ question, onSelectOption }) => {
+const CurrentQuestion = ({ question, sendOption }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
+  useEffect(() => {
+    setSelectedOption(null);
+  }, [question]);
+
   const handleOptionClick = (key) => {
-    setSelectedOption(key);
-    onSelectOption(key);
+    setSelectedOption(key); //to change the color on this component
+    sendOption(key); //to change the state of QuestionPanelPage.
   };
 
   return (
@@ -13,7 +17,6 @@ const CurrentQuestion = ({ question, onSelectOption }) => {
       {question ? (
         <div className="bg-gray-200 p-4 rounded-md text-center">
           <p className="text-lg font-bold">{question.question}</p>
-          {console.log(question)}
           <div className="mt-4 space-y-4">
             {Object.entries(question.options).map(([key, value]) => (
               <div

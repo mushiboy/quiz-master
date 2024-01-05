@@ -1,24 +1,48 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom"; // Import useParams from react-router-dom
 import CurrentQuestion from "./CurrentQuestion";
 import Navbar from "./NavBar";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
-const QuestionPanelPage = (playerId, roomId) => {
-  const [question, setQuestion] = useState("");
+const sendScore = async (answer) => {
+  try {
+    console.log("sending for score with answer", answer.answer);
+    const response = await fetch("http://localhost:8080/app/addScore", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(answer),
+      credentials: "include",
+    });
 
-  const sampleQues = {
-    id: "1",
-    question: "What is the capital of France?",
-    quizId: "mugesh_562",
-    options: {
-      OptionA: "Paris",
-      OptionB: "Berlin",
-      OptionC: "London",
-      OptionD: "Madrid",
-    },
-    correctAnswer: "OptionA",
-  };
+    // Check if the status code is 200 (OK)
+    if (response.status === 200) {
+      const responseBody = await response.text();
+      console.log("Response:", responseBody);
+    } else {
+      // Handle non-200 status codes
+      console.error("Score update failed with status:", response.status);
+      alert("Score update has failed.");
+    }
+  } catch (error) {
+    console.error("Error during updating score:", error.message);
+    alert("An unexpected error occurred during updating the score!.");
+  }
+};
+
+const QuestionPanelPage = (props) => {
+  let { playerId } = useParams();
+  let { roomId } = useParams();
+
+  const [answerToSend, setAnswerToSend] = useState({
+    playerId: `${playerId}`,
+    quizId: `${roomId}`,
+    questionId: null,
+    question: null,
+    answer: null,
+  });
 
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/game-socket");
@@ -28,20 +52,32 @@ const QuestionPanelPage = (playerId, roomId) => {
       stompClient.subscribe("/events/question", (response) => {
         console.log("Got a question that looks like this! ");
         const newQuestion = JSON.parse(response.body);
-        console.log("Sending Format ");
-        console.log(newQuestion);
-        setQuestion(newQuestion);
+
+        setAnswerToSend((previousAnswer) => {
+          // Create the updated answer object
+          const updatedAnswer = {
+            ...previousAnswer,
+            question: newQuestion,
+          };
+
+          return updatedAnswer;
+        });
       });
     });
-
-    // return () => {
-    //   stompClient.disconnect();
-    // };
   }, []);
 
-  const handleSelectOption = (selectedOption) => {
-    // Handle the selected option logic here
-    console.log("Selected Option:", selectedOption);
+  const sendSelectedOption = (selectedOption) => {
+    console.log("option saved");
+    setAnswerToSend((previousAnswer) => {
+      const updatedAnswer = {
+        ...previousAnswer,
+        answer: selectedOption,
+      };
+
+      sendScore(updatedAnswer);
+
+      return updatedAnswer;
+    });
   };
 
   return (
@@ -49,8 +85,8 @@ const QuestionPanelPage = (playerId, roomId) => {
       <Navbar currentPage="game-page" />
       <div className="container mx-auto mt-20 flex items-center justify-center">
         <CurrentQuestion
-          question={question}
-          onSelectOption={handleSelectOption}
+          question={answerToSend.question}
+          sendOption={sendSelectedOption}
         />
       </div>
     </div>
