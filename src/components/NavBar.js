@@ -26,14 +26,6 @@ const Navbar = ({ currentPage }) => {
           >
             Quizzes
           </a>
-          <a
-            href="/my-profile"
-            className={`text-white hover:bg-orange p-3 rounded-lg ${
-              currentPage === "my-profile" && "font-bold"
-            }`}
-          >
-            My Profile
-          </a>
 
           <a href="/" className="text-white  hover:bg-orange p-3 rounded-lg">
             Sign Out

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Import useParams from react-router-dom
+import { useParams, useNavigate } from "react-router-dom";
 import CurrentQuestion from "./CurrentQuestion";
 import Navbar from "./NavBar";
 import SockJS from "sockjs-client";
@@ -17,12 +17,10 @@ const sendScore = async (answer) => {
       credentials: "include",
     });
 
-    // Check if the status code is 200 (OK)
     if (response.status === 200) {
       const responseBody = await response.text();
       console.log("Response:", responseBody);
     } else {
-      // Handle non-200 status codes
       console.error("Score update failed with status:", response.status);
       alert("Score update has failed.");
     }
@@ -32,9 +30,10 @@ const sendScore = async (answer) => {
   }
 };
 
-const QuestionPanelPage = (props) => {
+const QuestionPanelPage = () => {
   let { playerId } = useParams();
   let { roomId } = useParams();
+  const navigate = useNavigate(); // Import useNavigate
 
   const [answerToSend, setAnswerToSend] = useState({
     playerId: `${playerId}`,
@@ -43,6 +42,9 @@ const QuestionPanelPage = (props) => {
     question: null,
     answer: null,
   });
+
+  const [quizEnded, setQuizEnded] = useState(false);
+  const [players, setPlayers] = useState([]);
 
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/game-socket");
@@ -54,7 +56,6 @@ const QuestionPanelPage = (props) => {
         const newQuestion = JSON.parse(response.body);
 
         setAnswerToSend((previousAnswer) => {
-          // Create the updated answer object
           const updatedAnswer = {
             ...previousAnswer,
             question: newQuestion,
@@ -62,6 +63,15 @@ const QuestionPanelPage = (props) => {
 
           return updatedAnswer;
         });
+      });
+
+      stompClient.subscribe("/events/scores", (response) => {
+        if (response.body) {
+          const updatedScores = JSON.parse(response.body);
+          updatedScores.sort((a, b) => b.score - a.score);
+          setPlayers(updatedScores);
+          setQuizEnded(true);
+        }
       });
     });
   }, []);
@@ -80,14 +90,51 @@ const QuestionPanelPage = (props) => {
     });
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div>
       <Navbar currentPage="game-page" />
       <div className="container mx-auto mt-20 flex items-center justify-center">
-        <CurrentQuestion
-          question={answerToSend.question}
-          sendOption={sendSelectedOption}
-        />
+        {quizEnded ? (
+          <div>
+            <h1 className="text-5xl font-handwriting text-center mb-5">
+              Quiz Ended
+            </h1>
+            <table className="border-collapse border border-gray-800 mx-auto mb-8 text-xl">
+              <thead>
+                <tr>
+                  <th className="border border-gray-800 p-2 font-bold">
+                    Player Name
+                  </th>
+                  <th className="border border-gray-800 p-2 font-bold">
+                    Score
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {players.map((player) => (
+                  <tr key={player.playerName}>
+                    <td className="border border-gray-800 p-2">
+                      {player.playerName}
+                    </td>
+                    <td className="border border-gray-800 p-2">
+                      {player.score}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <button onClick={goBack}>Go Back</button>
+          </div>
+        ) : (
+          <CurrentQuestion
+            question={answerToSend.question}
+            sendOption={sendSelectedOption}
+          />
+        )}
       </div>
     </div>
   );

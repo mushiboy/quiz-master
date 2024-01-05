@@ -1,17 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory, useNavigate } from "react-router-dom";
 import Navbar from "./NavBar";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
-import ReactToPdf from "react-to-pdf";
 import Button from "./Button";
 
 const CreateRoom = () => {
   const [players, setPlayers] = useState([]);
   const [numPlayers, setNumPlayers] = useState(players.length);
+  const [quizStarted, setQuizStarted] = useState(false);
+  const [scoresReceived, setScoresReceived] = useState(false);
   const { quizID } = useParams();
-
+  const navigate = useNavigate();
   const ref = useRef();
+
+  // Define 'columns'
+  const columns = [
+    { key: "playerName", label: "Player Name" },
+    { key: "score", label: "Score" },
+  ];
 
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/game-socket");
@@ -27,6 +34,7 @@ const CreateRoom = () => {
       stompClient.subscribe("/events/scores", (response) => {
         if (response.body) {
           updateScores(response.body);
+          setScoresReceived(true);
         }
       });
     });
@@ -37,7 +45,6 @@ const CreateRoom = () => {
     console.log(parsedNewPlayer);
     console.log(parsedNewPlayer.roomId);
 
-    // Check if the quizID from useParams matches the quizID from the incoming socket message
     if (parsedNewPlayer.roomId === quizID) {
       console.log("Quiz ID:", parsedNewPlayer.quizID);
       setPlayers((prevPlayers) => {
@@ -46,7 +53,6 @@ const CreateRoom = () => {
         );
 
         if (existingPlayerIndex !== -1) {
-          // Player already exists, update their info if quizID is the same
           if (
             prevPlayers[existingPlayerIndex].quizID === parsedNewPlayer.roomId
           ) {
@@ -57,7 +63,6 @@ const CreateRoom = () => {
             };
           }
         } else {
-          // Player is new, add them to the list
           prevPlayers.push({
             playerName: parsedNewPlayer.playerName,
             score: parsedNewPlayer.score,
@@ -73,38 +78,26 @@ const CreateRoom = () => {
 
   const updateScores = (responseBody) => {
     const updatedScores = JSON.parse(responseBody);
-
     updatedScores.sort((a, b) => b.score - a.score);
-
     setPlayers(updatedScores);
   };
 
   const onStartQuiz = () => {
-    // Send API call to start the quiz
     fetch("http://localhost:8080/app/startgame?quizId=" + quizID, {
       method: "POST",
     })
       .then((response) => response.text())
       .then((data) => {
         alert(data);
+        setQuizStarted(true);
       })
       .catch((error) => {
         console.error("Error starting the quiz:", error);
       });
   };
 
-  const columns = [
-    { key: "playerName", label: "Player Name" },
-    { key: "score", label: "Score" },
-  ];
-
-  const handlePrintClick = async () => {
-    const { toPdf } = await import("react-to-pdf");
-    const pdfGenerator = toPdf();
-
-    pdfGenerator.onBeforeGetContent(() => {});
-
-    pdfGenerator.toPdf();
+  const goBack = () => {
+    navigate(-1);
   };
 
   return (
@@ -145,16 +138,20 @@ const CreateRoom = () => {
           </tbody>
         </table>
 
-        <Button onClick={onStartQuiz} customClass="mt-2 bg-orange hover:bg-b2">
-          Start Quiz
-        </Button>
+        {!quizStarted && (
+          <Button
+            onClick={onStartQuiz}
+            customClass="mt-2 bg-orange hover:bg-b2"
+          >
+            Start Quiz
+          </Button>
+        )}
 
-        {/* <button
-          onClick={handlePrintClick}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-        >
-          Print as PDF
-        </button> */}
+        {scoresReceived && quizStarted && (
+          <Button onClick={goBack} customClass="mt-2 bg-red hover:bg-b2">
+            Go Back
+          </Button>
+        )}
       </div>
     </div>
   );
