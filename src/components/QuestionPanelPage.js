@@ -7,6 +7,7 @@ import Stomp from "stompjs";
 
 const sendScore = async (answer) => {
   try {
+    console.log("sending for score with answer", answer.answer);
     const response = await fetch("http://localhost:8080/app/addScore", {
       method: "POST",
       headers: {
@@ -53,9 +54,6 @@ const QuestionPanelPage = (props) => {
         const newQuestion = JSON.parse(response.body);
 
         setAnswerToSend((previousAnswer) => {
-          // send object to backend
-          sendScore(previousAnswer);
-
           // Create the updated answer object
           const updatedAnswer = {
             ...previousAnswer,
@@ -69,10 +67,17 @@ const QuestionPanelPage = (props) => {
   }, []);
 
   const sendSelectedOption = (selectedOption) => {
-    setAnswerToSend((previousAnswer) => ({
-      ...previousAnswer,
-      answer: selectedOption,
-    }));
+    console.log("option saved");
+    setAnswerToSend((previousAnswer) => {
+      const updatedAnswer = {
+        ...previousAnswer,
+        answer: selectedOption,
+      };
+
+      sendScore(updatedAnswer);
+
+      return updatedAnswer;
+    });
   };
 
   return (
